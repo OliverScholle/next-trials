@@ -48,6 +48,7 @@ model User {
   emailVerified DateTime?
   image         String?
   EmployeeId    String?
+  IsRevoked     Boolean   @default(false)
 
   accounts      Account[]
   sessions      Session[]
@@ -137,6 +138,7 @@ model Company {
 model CompanyEmployees {
   CompanyId         String      // Relation scalar field
   EmployeeId        String      // Relation scalar field (used in @relation attribute below)
+  IsActive          Boolean     @default(true)
   CreatedOn         DateTime    @default(now())
   ModifiedOn        DateTime    @default(now())
 
