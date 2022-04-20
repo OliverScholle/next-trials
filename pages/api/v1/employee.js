@@ -1,15 +1,5 @@
 
 
-export async function getAllEmployees({ companyId })
-{
-
-}
-
-export async function addNewRandomEmployee({ companyId })
-{
-
-}
-
 export default function handler(request, response)
 {
     if (request.method === 'GET')

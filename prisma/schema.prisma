@@ -101,13 +101,16 @@ model EmployeeDependent {
 }
 
 model Paycheck {
-  PaycheckId String   @id @default(cuid())
-  EmployeeId String
-  CompanyId  String
-  CreatedOn  DateTime @default(now())
-  ModifiedOn DateTime @default(now())
-  Employee   Employee @relation(fields: [EmployeeId], references: [EmployeeId])
-  Company    Company  @relation(fields: [CompanyId], references: [CompanyId])
+  PaycheckId  String    @id @default(cuid())
+  EmployeeId  String
+  CompanyId   String
+  HoursWorked Decimal   @db.Decimal(3,2)
+  GrossPay    Decimal   @db.Decimal(10,2)
+  NetPay      Decimal   @db.Decimal(10,2)
+  CreatedOn   DateTime  @default(now())
+  ModifiedOn  DateTime  @default(now())
+  Employee    Employee  @relation(fields: [EmployeeId], references: [EmployeeId])
+  Company     Company   @relation(fields: [CompanyId], references: [CompanyId])
 }
 
 model Company {
@@ -157,6 +160,8 @@ model CompanyPayrollOptions {
 model CompanyBenefit {
   CompanyBenefitId        String                    @id @default(cuid())
   CompanyId               String
+  Key                     String                    @db.VarChar(32)
+  Value                   String                    @db.VarChar(128)
   CreatedOn               DateTime                  @default(now())
   ModifiedOn              DateTime                  @default(now())
   Company                 Company                   @relation(fields: [CompanyId], references: [CompanyId])
@@ -180,7 +185,7 @@ model BenefitDeduction {
   CompanyBenefitId   String
   Key                String         @db.VarChar(32)
   Value              String         @db.VarChar(128)
-  Priority           Decimal        @default(0.000000000000000000000000000000)
+  Priority           Decimal        @default(0.000)
   CreatedOn          DateTime       @default(now())
   ModifiedOn         DateTime       @default(now())
   CompanyBenefit     CompanyBenefit @relation(fields: [CompanyBenefitId], references: [CompanyBenefitId])
