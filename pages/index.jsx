@@ -18,7 +18,7 @@ export default function Home() {
       <h1 className={styles.title}>User Dashboard</h1>
       <main className={styles.main}>
         <div className={styles.grid}>
-          <Link href="/employee">
+          <Link href="/employee/cl28ml4ym0010u4sxr0gg7t6l">
             <a className={styles.card}>
               <h2>Employee Dashboard &rarr;</h2>
               <p>Access your company information and payroll.</p>

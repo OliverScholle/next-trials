@@ -1,30 +1,47 @@
 import styles from '../../styles/Home.module.css';
 import { useState } from 'react';
+import { getAllEmployees } from '@/lib/services/employeeService';
+import { Button, Table } from 'react-bootstrap';
 
-export async function getStaticProps({ params })
+export async function getServerSideProps({ params })
 {
-  const result = await fetch("/api/v1/", params.id);
-
-  return { props }
+  const employees = await getAllEmployees(params.id);
+  return { props: { data: JSON.stringify(employees) } }
 }
 
-export default function EmployeeDashboard() {
-  const [data, setData] = useState([]);
-  const fetchData = async () => {
-      const response = await fetch("/api/employee");
+export function createPaycheck(employeeId, companyId)
+{
+  
+}
 
-      if (!response.ok)
-          throw new Error(`Error: ${response.status}`);
-
-      const employees = await response.json();
-      return setData(employees);
-  }
+export default function EmployeeDashboard({ data }) {
+    const [employees, setEmployeeState] = useState(JSON.parse(data));
     
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Employee Dashboard</h1>
-      <main className={styles.main}>
-      </main>
+      <Table striped bordered hover>
+        <thead>
+          <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Employee ID</th>
+            <th>Dependents</th>
+            <th>Payroll</th>
+          </tr>
+        </thead>
+        <tbody>
+          {employees.map(function(value, index) { return (
+          <tr key={index}>
+              <td>{value.FirstName}</td>
+              <td>{value.LastName}</td>
+              <td>{value.EmployeeId}</td>
+              <td>{value.EmployeeDependent.length}</td>
+              <td><Button variant="outline-primary" onClick={() => createPaycheck(value.EmployeeId, value.CompanyId)}>Make Paycheck</Button></td>
+          </tr>
+          )})}
+        </tbody>
+      </Table>
     </div>
   )
 }

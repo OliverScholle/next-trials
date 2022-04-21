@@ -8,7 +8,7 @@ export default function handler(request, response)
     }
     else if (request.method === 'POST')
     {
-        addNewRandomCompany();
+        await addNewRandomCompany();
         response.status(200).json();
     }
     else

@@ -107,6 +107,7 @@ model Paycheck {
   HoursWorked Decimal   @db.Decimal(3,2)
   GrossPay    Decimal   @db.Decimal(10,2)
   NetPay      Decimal   @db.Decimal(10,2)
+  PayPeriod   String    @db.Char(23)
   CreatedOn   DateTime  @default(now())
   ModifiedOn  DateTime  @default(now())
   Employee    Employee  @relation(fields: [EmployeeId], references: [EmployeeId])
