@@ -1,34 +1,28 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["referentialIntegrity"]
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider             = "mysql"
+  url                  = env("DATABASE_URL")
   referentialIntegrity = "prisma"
 }
 
-/// NEXT-AUTH REQUIRED TABLES
-
 model Account {
-  id                 String  @id @default(cuid())
-  userId             String
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?  @db.Text
-  access_token       String?  @db.Text
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?  @db.Text
-  session_state      String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -47,9 +41,8 @@ model User {
   email         String?   @unique
   emailVerified DateTime?
   image         String?
-  EmployeeId    String?
+  EmployeeId    String?   @unique
   IsRevoked     Boolean   @default(false)
-
   accounts      Account[]
   sessions      Session[]
   Employee      Employee? @relation(fields: [EmployeeId], references: [EmployeeId], onDelete: Cascade)
@@ -62,143 +55,139 @@ model VerificationToken {
 
   @@unique([identifier, token])
 }
-/// END OF NEXT-AUTH TABLES
 
 model Address {
-  AddressId     String      @id  @default(cuid())
-  Address1      String      @db.VarChar(256)
-  Address2_Lvl4 String?     @db.VarChar(128)
-  City_Lvl3     String      @db.VarChar(64)
-  County_Lvl2   String?     @db.VarChar(64)
-  State_Lvl1    String      @db.VarChar(64)
-  CountryCode   String      @db.Char(6)
-  CreatedOn     DateTime    @default(now())
-  ModifiedOn    DateTime    @default(now())
-
+  AddressId     String    @id @default(cuid())
+  Address1      String    @db.VarChar(256)
+  Address2_Lvl4 String?   @db.VarChar(128)
+  City_Lvl3     String    @db.VarChar(64)
+  County_Lvl2   String?   @db.VarChar(64)
+  State_Lvl1    String    @db.VarChar(64)
+  PostalCode    String    @db.VarChar(10)
+  CountryCode   String    @db.Char(6)
+  CreatedOn     DateTime  @default(now())
+  ModifiedOn    DateTime  @default(now())
   Employee      Employee?
   Company       Company?
 }
 
 model Employee {
-  EmployeeId        String      @id  @default(cuid())
-  FirstName         String      @db.VarChar(32)
-  LastName          String      @db.VarChar(32)
-  MiddleName        String?     @db.VarChar(32)
-  CompanyEmail      String      @unique @db.VarChar(320)
-  AddressId         String      
-  DateOfBirth       DateTime    
-  CreatedOn         DateTime    @default(now())
-  ModifiedOn        DateTime    @default(now())
-
-  User                    User?
-  Address                 Address     @relation(fields: [AddressId], references: [AddressId])
-  Paycheck                Paycheck[]
-  CompanyEmployees        CompanyEmployees[]  
-  EmployeeCompanyBenefit  EmployeeCompanyBenefits[]
-  EmployeeDependent       EmployeeDependent[]
+  EmployeeId             String                    @id @default(cuid())
+  FirstName              String                    @db.VarChar(32)
+  LastName               String                    @db.VarChar(32)
+  MiddleName             String?                   @db.VarChar(32)
+  CompanyEmail           String                    @unique @db.VarChar(320)
+  AddressId              String                    
+  DateOfBirth            DateTime
+  CreatedOn              DateTime                  @default(now())
+  ModifiedOn             DateTime                  @default(now())
+  User                   User?
+  Address                Address                   @relation(fields: [AddressId], references: [AddressId])
+  Paycheck               Paycheck[]
+  CompanyEmployees       CompanyEmployees[]
+  EmployeeCompanyBenefit EmployeeCompanyBenefits[]
+  EmployeeDependent      EmployeeDependent[]
 }
 
 model EmployeeDependent {
-  DependentId   String      @id  @default(cuid())
-  EmployeeId    String
-  FirstName     String      @db.VarChar(32)
-  LastName      String      @db.VarChar(32)
-  DateOfBirth   DateTime    
-  CreatedOn     DateTime    @default(now())
-  ModifiedOn    DateTime    @default(now())
-
-  Employee      Employee    @relation(fields: [EmployeeId], references: [EmployeeId])
+  DependentId String   @id @default(cuid())
+  EmployeeId  String
+  FirstName   String   @db.VarChar(32)
+  LastName    String   @db.VarChar(32)
+  DateOfBirth DateTime
+  CreatedOn   DateTime @default(now())
+  ModifiedOn  DateTime @default(now())
+  Employee    Employee @relation(fields: [EmployeeId], references: [EmployeeId])
 }
 
 model Paycheck {
-  PaycheckId    String      @id  @default(cuid())
-  EmployeeId    String
-  CompanyId     String
-  CreatedOn     DateTime    @default(now())
-  ModifiedOn    DateTime    @default(now())
-
-  Employee      Employee    @relation(fields: [EmployeeId], references: [EmployeeId])
-  Company       Company     @relation(fields: [CompanyId], references: [CompanyId])
+  PaycheckId  String    @id @default(cuid())
+  EmployeeId  String
+  CompanyId   String
+  HoursWorked Decimal   @db.Decimal(3,2)
+  GrossPay    Decimal   @db.Decimal(10,2)
+  NetPay      Decimal   @db.Decimal(10,2)
+  PayPeriod   String    @db.Char(23)
+  CreatedOn   DateTime  @default(now())
+  ModifiedOn  DateTime  @default(now())
+  Employee    Employee  @relation(fields: [EmployeeId], references: [EmployeeId])
+  Company     Company   @relation(fields: [CompanyId], references: [CompanyId])
 }
 
 model Company {
-  CompanyId     String      @id @default(cuid())
-  Name          String      @db.VarChar(128)
-  AddressId     String
-  CreatedOn     DateTime    @default(now())
-  ModifiedOn    DateTime    @default(now())
-  
-  Address           Address     @relation(fields: [AddressId], references: [AddressId])
-  Paycheck          Paycheck[]
-  CompanyPayroll    CompanyPayroll?
-  CompanyEmployees  CompanyEmployees[]
-  CompanyBenefit    CompanyBenefit[]
+  CompanyId        String             @id @default(cuid())
+  Name             String             @db.VarChar(128)
+  AddressId        String             @unique
+  CreatedOn        DateTime           @default(now())
+  ModifiedOn       DateTime           @default(now())
+  Address          Address            @relation(fields: [AddressId], references: [AddressId])
+  Paycheck         Paycheck[]
+  CompanyPayroll   CompanyPayroll?
+  CompanyEmployees CompanyEmployees[]
+  CompanyBenefit   CompanyBenefit[]
 }
 
 model CompanyEmployees {
-  CompanyId         String      // Relation scalar field
-  EmployeeId        String      // Relation scalar field (used in @relation attribute below)
-  IsActive          Boolean     @default(true)
-  CreatedOn         DateTime    @default(now())
-  ModifiedOn        DateTime    @default(now())
-
-  Company           Company     @relation(fields: [CompanyId], references: [CompanyId])
-  Employee          Employee    @relation(fields: [EmployeeId], references: [EmployeeId])
+  CompanyId  String
+  EmployeeId String
+  IsActive   Boolean  @default(true)
+  CreatedOn  DateTime @default(now())
+  ModifiedOn DateTime @default(now())
+  Company    Company  @relation(fields: [CompanyId], references: [CompanyId])
+  Employee   Employee @relation(fields: [EmployeeId], references: [EmployeeId])
 
   @@id([CompanyId, EmployeeId])
 }
 
 model CompanyPayroll {
-  CompanyPayrollId  String      @id  @default(cuid())
-  CompanyId         String
-  CreatedOn         DateTime    @default(now())
-  ModifiedOn        DateTime    @default(now())
-
-  Company           Company     @relation(fields: [CompanyId], references: [CompanyId])
+  CompanyPayrollId      String                  @id @default(cuid())
+  CompanyId             String                  @unique
+  CreatedOn             DateTime                @default(now())
+  ModifiedOn            DateTime                @default(now())
+  Company               Company                 @relation(fields: [CompanyId], references: [CompanyId])
   CompanyPayrollOptions CompanyPayrollOptions[]
 }
 
 model CompanyPayrollOptions {
-  CPO_ID            String      @id  @default(cuid())
-  CompanyPayrollId  String    
-  Key               String      @db.VarChar(32)
-  Value             String      @db.VarChar(128)
-  CreatedOn         DateTime    @default(now())
-  ModifiedOn        DateTime    @default(now())
-  CompanyPayroll    CompanyPayroll  @relation(fields: [CompanyPayrollId], references: [CompanyPayrollId])
+  CPO_ID           String         @id @default(cuid())
+  CompanyPayrollId String
+  Key              String         @db.VarChar(32)
+  Value            String         @db.VarChar(128)
+  CreatedOn        DateTime       @default(now())
+  ModifiedOn       DateTime       @default(now())
+  CompanyPayroll   CompanyPayroll @relation(fields: [CompanyPayrollId], references: [CompanyPayrollId])
 }
 
 model CompanyBenefit {
-  CompanyBenefitId  String      @id @default(cuid())
-  CompanyId         String
-  CreatedOn         DateTime    @default(now())
-  ModifiedOn        DateTime    @default(now())
-
-  Company                   Company     @relation(fields: [CompanyId], references: [CompanyId])
-  EmployeeCompanyBenefits   EmployeeCompanyBenefits[]
-  BenefitDeduction          BenefitDeduction[]
+  CompanyBenefitId        String                    @id @default(cuid())
+  CompanyId               String
+  Key                     String                    @db.VarChar(32)
+  Value                   String                    @db.VarChar(128)
+  CreatedOn               DateTime                  @default(now())
+  ModifiedOn              DateTime                  @default(now())
+  Company                 Company                   @relation(fields: [CompanyId], references: [CompanyId])
+  EmployeeCompanyBenefits EmployeeCompanyBenefits[]
+  BenefitDeduction        BenefitDeduction[]
 }
 
 model EmployeeCompanyBenefits {
-  CompanyBenefitId  String      // Relation scalar field
-  EmployeeId        String      // Relation scalar field (used in @relation attribute below)
-  CreatedOn         DateTime    @default(now())
-  ModifiedOn        DateTime    @default(now())
-
-  CompanyBenefit    CompanyBenefit    @relation(fields: [CompanyBenefitId], references: [CompanyBenefitId])
-  Employee          Employee          @relation(fields: [EmployeeId], references: [EmployeeId])
+  CompanyBenefitId String
+  EmployeeId       String
+  CreatedOn        DateTime       @default(now())
+  ModifiedOn       DateTime       @default(now())
+  CompanyBenefit   CompanyBenefit @relation(fields: [CompanyBenefitId], references: [CompanyBenefitId])
+  Employee         Employee       @relation(fields: [EmployeeId], references: [EmployeeId])
 
   @@id([CompanyBenefitId, EmployeeId])
 }
 
 model BenefitDeduction {
-  BenefitDeductionId    String      @id  @default(cuid())
-  CompanyBenefitId      String
-  Key                   String      @db.VarChar(32)
-  Value                 String      @db.VarChar(128)
-  Priority              Decimal     @default(0.0)
-  CreatedOn             DateTime    @default(now())
-  ModifiedOn            DateTime    @default(now())
-
-  CompanyBenefit        CompanyBenefit    @relation(fields: [CompanyBenefitId], references: [CompanyBenefitId])
+  BenefitDeductionId String         @id @default(cuid())
+  CompanyBenefitId   String
+  Key                String         @db.VarChar(32)
+  Value              String         @db.VarChar(128)
+  Priority           Decimal        @default(0.000)
+  CreatedOn          DateTime       @default(now())
+  ModifiedOn         DateTime       @default(now())
+  CompanyBenefit     CompanyBenefit @relation(fields: [CompanyBenefitId], references: [CompanyBenefitId])
 }
