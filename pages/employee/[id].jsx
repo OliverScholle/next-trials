@@ -1,11 +1,14 @@
 import styles from '../../styles/Home.module.css';
 import { useState } from 'react';
-import { getAllEmployees } from '@/lib/services/employeeService';
 import { Button, Table } from 'react-bootstrap';
+import Context from '@/lib/context';
+import EmployeeService from '@/lib/services/employeeService';
 
 export async function getServerSideProps({ params })
 {
-  const employees = await getAllEmployees(params.id);
+  const context = Context.getInstance();
+  const service = new EmployeeService(context);
+  const employees = await service.getAllEmployees(params.id);
   return { props: { data: JSON.stringify(employees) } }
 }
 
