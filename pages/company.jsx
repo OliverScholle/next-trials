@@ -1,11 +1,15 @@
 import styles from '../styles/Home.module.css';
 import { useState } from 'react';
-import { getAllCompanies } from '@/lib/services/companyService';
 import { Button, Table } from 'react-bootstrap';
+
+import Context from '@/lib/context';
+import CompanyService from '@/lib/services/companyService';
 
 export async function getServerSideProps()
 {
-    return { props: {data: JSON.stringify(await getAllCompanies()) } }
+  const context = Context.getInstance();
+  const compService = new CompanyService(context);
+  return { props: {data: JSON.stringify(await compService.getAllCompanies()) } }
 }
 
 export async function addEmployee(companyId)

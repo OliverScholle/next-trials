@@ -97,7 +97,7 @@ model EmployeeDependent {
   DateOfBirth DateTime
   CreatedOn   DateTime @default(now())
   ModifiedOn  DateTime @default(now())
-  Employee    Employee @relation(fields: [EmployeeId], references: [EmployeeId])
+  Employee    Employee @relation(fields: [EmployeeId], references: [EmployeeId], onDelete: Cascade)
 }
 
 model Paycheck {
@@ -134,7 +134,7 @@ model CompanyEmployees {
   CreatedOn  DateTime @default(now())
   ModifiedOn DateTime @default(now())
   Company    Company  @relation(fields: [CompanyId], references: [CompanyId])
-  Employee   Employee @relation(fields: [EmployeeId], references: [EmployeeId])
+  Employee   Employee @relation(fields: [EmployeeId], references: [EmployeeId], onDelete: Cascade)
 
   @@id([CompanyId, EmployeeId])
 }

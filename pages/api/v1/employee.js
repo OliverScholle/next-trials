@@ -13,7 +13,7 @@ export default function handler(request, response)
     else if (request.method === 'POST')
     {
         const employee = empService.addNewRandomEmployee(request.body['CompanyId']).then(res => {
-            return response.status(200).json({ data: res });
+            response.status(200).json({ data: res });
         })
     }
     else
