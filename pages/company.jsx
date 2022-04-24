@@ -19,7 +19,7 @@ export async function addEmployee(companyId)
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ CompanyId: companyId })
     };
-    const response = await fetch('api/v1/employee', requestOptions);
+    const response = await fetch('/api/v1/employee', requestOptions);
 }
 
 export default function CompanyDashboard({ data })

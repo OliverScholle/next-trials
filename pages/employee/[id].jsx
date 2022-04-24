@@ -12,9 +12,14 @@ export async function getServerSideProps({ params })
   return { props: { data: JSON.stringify(employees) } }
 }
 
-export function createPaycheck(employeeId, companyId)
+export async function createPaycheck({ employeeId, companyId })
 {
-  
+  const requestOptions = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ EmployeeId: employeeId, CompanyId: companyId })
+  };
+  const response = await fetch('/api/v1/employee/paycheck', requestOptions);
 }
 
 export default function EmployeeDashboard({ data }) {

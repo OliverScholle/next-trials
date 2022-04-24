@@ -1,7 +1,7 @@
 import Context from '@/lib/context';
 import EmployeeService from "@/lib/services/employeeService";
 
-export default function handler(request, response)
+export default async function handler(request, response)
 {
     const context = Context.getInstance();
     const empService = new EmployeeService(context);
