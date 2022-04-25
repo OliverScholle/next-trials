@@ -7,7 +7,8 @@ export default async function handler(request, response)
     const empService = new EmployeeService(context);
 
     if (request.method === 'GET') {
-        response.status(405).json({ message: 'Method not implemented'});
+        const paychecks = await empService.getEmployeePaychecks(request.query.employeeId, request.query.companyId);
+        response.status(200).json(paychecks);
     }
     else if (request.method === 'POST') {
         const paycheck = await empService.createNewPaycheck(request.body['EmployeeId'], request.body['CompanyId']);

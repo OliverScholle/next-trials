@@ -105,9 +105,9 @@ model Paycheck {
   PaycheckId  String   @id @default(cuid())
   EmployeeId  String
   CompanyId   String
-  HoursWorked Decimal  @db.Decimal(3, 2)
-  GrossPay    Decimal  @db.Decimal(10, 2)
-  NetPay      Decimal  @db.Decimal(10, 2)
+  HoursWorked Decimal  @db.Decimal(5, 2)
+  GrossPay    Decimal  @db.Decimal(12, 2)
+  NetPay      Decimal  @db.Decimal(12, 2)
   PayPeriod   String   @db.Char(23)
   CreatedOn   DateTime @default(now())
   ModifiedOn  DateTime @default(now())
