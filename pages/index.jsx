@@ -33,7 +33,7 @@ export default function Home() {
           </Link>
 
           <div className={styles.card}>
-            <Button variant="success">Create New Employee</Button>
+            <Button variant="success" disabled>Temporarily Disabled</Button>
           </div>
 
           <div className={styles.card}>
