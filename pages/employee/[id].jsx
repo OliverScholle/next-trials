@@ -9,10 +9,10 @@ export async function getServerSideProps({ params })
   const context = Context.getInstance();
   const service = new EmployeeService(context);
   const employees = await service.getAllEmployees(params.id);
-  return { props: { data: JSON.stringify(employees) } }
+  return { props: { data: JSON.stringify(employees), companyId: params.id } }
 }
 
-export async function createPaycheck({ employeeId, companyId })
+export async function createPaycheck(employeeId, companyId)
 {
   const requestOptions = {
     method: 'POST',
@@ -22,8 +22,8 @@ export async function createPaycheck({ employeeId, companyId })
   const response = await fetch('/api/v1/employee/paycheck', requestOptions);
 }
 
-export default function EmployeeDashboard({ data }) {
-    const [employees, setEmployeeState] = useState(JSON.parse(data));
+export default function EmployeeDashboard({ data, companyId }) {
+  const [employees, setEmployeeState] = useState(JSON.parse(data));
     
   return (
     <div className={styles.container}>
@@ -45,7 +45,7 @@ export default function EmployeeDashboard({ data }) {
               <td>{value.LastName}</td>
               <td>{value.EmployeeId}</td>
               <td>{value.EmployeeDependent.length}</td>
-              <td><Button variant="outline-primary" onClick={() => createPaycheck(value.EmployeeId, value.CompanyId)}>Make Paycheck</Button></td>
+              <td><Button variant="outline-primary" onClick={() => createPaycheck(value.EmployeeId, companyId)}>Make Paycheck</Button></td>
           </tr>
           )})}
         </tbody>
